@@ -361,3 +361,4 @@ Przy gęstych danych zamiast przewijać strzałką pojedynczo, użyj `*`/`#`
 - Wykres innej wielkości niż temperatura (np. wilgotność, ciśnienie) –
   łatwe do dodania, `ChartCanvas` już ma cały mechanizm skalowania osi,
   trzeba by tylko sparametryzować które pole rysuje.
+

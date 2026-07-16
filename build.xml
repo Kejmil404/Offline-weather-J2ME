@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Build dla Apache Ant + plugin Antenna (antenna-bin-*.jar) do kompilacji
+  MIDletow. Antenna: https://antenna.sourceforge.net/ (wtyczka do Ant,
+  ktora dodaje zadania <wtkbuild> i <wtkpackage> obslugujace
+  preverify + pakowanie JAD/JAR).
+
+  Wymagania przed uruchomieniem:
+   1. Zainstalowany Sun/Oracle Java ME SDK 3.0 (lub stary Sony Ericsson
+      SDK / WTK 2.5.2) - potrzebny do preverify oraz bibliotek
+      CLDC 1.1 / MIDP 2.0 / JSR-75.
+   2. Sciezka WTK_HOME ustawiona ponizej lub jako zmienna srodowiskowa.
+   3. antenna.jar dodany do classpath Anta (ANT_HOME/lib albo -lib).
+
+  Uruchomienie:
+      ant clean package
+  Wynik: dist/weather.jar + dist/weather.jad gotowe do wgrania na telefon.
+-->
+<project name="PogodaOffline" default="package" basedir=".">
+
+    <property environment="env"/>
+    <!-- podmien na sciezke swojego SDK, jesli zmienna WTK_HOME nie jest ustawiona -->
+    <property name="wtk.home" value="${env.WTK_HOME}"/>
+
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="dist.dir" value="dist"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+    </target>
+
+    <target name="package" depends="init">
+        <taskdef resource="antenna.properties"/>
+        <wtkbuild srcdir="${src.dir}"
+                  destdir="${build.dir}"
+                  preverify="true"
+                  cldcapi="1.1"
+                  midpapi="2.0"
+                  wtklib="${wtk.home}/lib"/>
+
+        <wtkpackage jadfile="${dist.dir}/weather.jad"
+                    jarfile="${dist.dir}/weather.jar"
+                    basedir="${build.dir}"
+                    obfuscate="false">
+            <midlet name="Pogoda Offline" icon="" class="WeatherMIDlet"/>
+            <attribute name="MIDlet-Vendor" value="DIY"/>
+            <attribute name="MIDlet-Version" value="1.0.0"/>
+            <attribute name="MicroEdition-Configuration" value="CLDC-1.1"/>
+            <attribute name="MicroEdition-Profile" value="MIDP-2.0"/>
+            <attribute name="MIDlet-Permissions" value="javax.microedition.io.Connector.file.read"/>
+        </wtkpackage>
+    </target>
+
+</project>
